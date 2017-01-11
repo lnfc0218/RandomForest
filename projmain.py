@@ -35,11 +35,9 @@ attributes = (Attribute('A1', tuple(numpy.linspace(1.5112,1.5339).tolist())),
               Attribute('A9', tuple(numpy.linspace(0, 0.51).tolist())))
 
 
-
 def read_glass_dataset(path):
     '''
     Return a list containing samples as sample_class, (tuple of features), id
-
     Attribute names taken from glass.name file'''
 
     dataframe = p.read_csv(path, names = ['Id', 'RI', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe', 'Type'])
@@ -58,10 +56,17 @@ def read_glass_dataset(path):
         structured_data.append([row[-1],tuple(row[1:len(row)-1]),row[0]])
 
     # iterate through items in sampels and return the Sample()
-    return structured_data
+    print structured_data
+    samples = ()
+    for item in structured_data:
+      samples += (Sample(item[0], item[1], item[2]),)
+
+    return samples
 
 
+# Example for glass dataset
 samples = read_glass_dataset(path)
-print samples
 for item in samples:
-    Sample(item[0],item[1], item[2])
+  print item.sample_class, item.attribute, item.identity
+# for item in samples:
+#     print Sample(item[0],item[1], item[2])
