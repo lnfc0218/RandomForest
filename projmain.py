@@ -56,7 +56,7 @@ bc_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
               Attribute('A8', tuple(numpy.linspace(0, 3).tolist())))
 
 
-def read_bc_dataset(path):
+def get_bc_dataset(path):
     '''
     Return a list containing samples as sample_class, (tuple of features), id
     Attribute names taken from glass.name file'''
@@ -85,7 +85,7 @@ def read_bc_dataset(path):
     return samples
  
 
-def read_glass_dataset(path):
+def get_glass_dataset(path):
     '''
     Return a list containing samples as sample_class, (tuple of features), id
     Attribute names taken from glass.name file'''
@@ -114,14 +114,14 @@ def read_glass_dataset(path):
  
 
 # Example for glass dataset
-samples = read_glass_dataset(glass_path)
+samples = get_glass_dataset(glass_path)
 print len(samples)
 for item in samples:
    print item.sample_class, item.attribute, item.identity
 
 
 # Example for bc dataset
-samples = read_bc_dataset(bc_path)
+samples = get_bc_dataset(bc_path)
 for item in samples:
    print item.sample_class, item.attribute, item.identity
 print len(samples)
