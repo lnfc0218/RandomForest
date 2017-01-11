@@ -3,6 +3,7 @@ import numpy
 
 glass_path = "Datasets/glass.data"
 bc_path = "Datasets/breast-cancer-wisconsin.data"
+housevotes_path = "house-votes-84.data"
 
 p.set_option('display.max_row', 1000)
 
@@ -22,6 +23,13 @@ class BCSample:
         self.sample_class = sample_class
         self.attribute = dict(zip(bc_attributes, values))
         self.identity = identity
+
+class HouseVotesSample:
+    "Represenation of data samles"
+
+    def __init__(self, class_name, values):
+        self.class_name = class_name
+        self.attribute = dict(zip(hv_attributes, values))
 
 
 class Attribute:
@@ -55,6 +63,24 @@ bc_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
               Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
               Attribute('A8', tuple(numpy.linspace(0, 3).tolist())))
 
+hv_attributes = (Attribute('A1', tuple(numpy.linspace(4, 1))),
+              Attribute('A2', tuple(numpy.array(['a']))),
+              Attribute('A3', tuple('f')),
+              Attribute('A4', tuple('f')),
+              Attribute('A5', tuple('f')),
+              Attribute('A6', tuple('f')),
+              Attribute('A7', tuple('f')),
+              Attribute('A8', tuple('f')),
+              Attribute('A9', tuple('f')),
+              Attribute('A10', tuple('f')),
+              Attribute('A11', tuple('f')),
+              Attribute('A12', tuple('f')),
+              Attribute('A13', tuple('f')),
+              Attribute('A14', tuple('f')),
+              Attribute('A16', tuple('f')),
+              Attribute('A17', tuple('f')),
+              Attribute('A18', tuple('f')))
+
 
 def get_bc_dataset(path):
     '''
@@ -80,10 +106,9 @@ def get_bc_dataset(path):
    # print structured_data
     samples = ()
     for item in structured_data:
-      samples += (GlassSample(item[0], item[1], item[2]),)
+      samples += (BCSample(item[0], item[1], item[2]),)
 
     return samples
- 
 
 def get_glass_dataset(path):
     '''
@@ -112,16 +137,50 @@ def get_glass_dataset(path):
 
     return samples
  
+def get_hv_dataset(path):
+    '''
+    Return a list containing samples as sample_class, (tuple of features), id
+    Attribute names taken from glass.name file'''
+
+    dataframe = p.read_csv(path, names = ['handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa'])
+
+    # transpose the dataframe so that it is easier to pick them by just selecting a column
+    data = dataframe.T
+
+    # list for storing each individual sample as a list
+    list_for_samples = []
+    for col in range(data.shape[1]):
+        list_for_samples.append(data[col].tolist())
+
+    # list for storing samples as sample_class, (tuple of features), id as required by the ml program
+    structured_data = []
+    for row in list_for_samples:
+        structured_data.append([row[-1],tuple(row[1:len(row)-1]),row[0]])
+
+    # iterate through items in sampels and return the Sample()
+   # print structured_data
+    samples = ()
+    for item in structured_data:
+      samples += (HouseVotesSample(item[0], item[1]),)
+
+    return samples
+ 
 
 # Example for glass dataset
-samples = get_glass_dataset(glass_path)
-print len(samples)
-for item in samples:
-   print item.sample_class, item.attribute, item.identity
+# samples = get_glass_dataset(glass_path)
+# print len(samples)
+# for item in samples:
+#    print item.sample_class, item.attribute, item.identity
 
 
-# Example for bc dataset
-samples = get_bc_dataset(bc_path)
+# # Example for bc dataset
+# samples = get_bc_dataset(bc_path)
+# for item in samples:
+#    print item.sample_class, item.attribute, item.identity
+# print len(samples)
+
+# Not working yet? 
+samples = get_hv_dataset(bc_path)
 for item in samples:
-   print item.sample_class, item.attribute, item.identity
+   print item.class_name, item.attribute
 print len(samples)
