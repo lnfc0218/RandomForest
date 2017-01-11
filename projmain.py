@@ -1,7 +1,7 @@
 import pandas as p
 import numpy
 
-path = "/home/sugandh/KTH-projects/advml/RandomForest/Datasets/glass.data"
+path = "Datasets/glass.data"
 p.set_option('display.max_row', 1000)
 
 
@@ -35,7 +35,8 @@ attributes = (Attribute('A1', tuple(numpy.linspace(1.5112,1.5339).tolist())),
               Attribute('A9', tuple(numpy.linspace(0, 0.51).tolist())))
 
 
-def read_data_file_and_create_list(path):
+
+def read_glass_dataset(path):
     '''
     Return a list containing samples as sample_class, (tuple of features), id
 
@@ -56,8 +57,11 @@ def read_data_file_and_create_list(path):
     for row in list_for_samples:
         structured_data.append([row[-1],tuple(row[1:len(row)-1]),row[0]])
 
+    # iterate through items in sampels and return the Sample()
     return structured_data
 
-samples = read_data_file_and_create_list(path)
+
+samples = read_glass_dataset(path)
+print samples
 for item in samples:
     Sample(item[0],item[1], item[2])
