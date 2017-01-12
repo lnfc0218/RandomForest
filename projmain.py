@@ -136,20 +136,23 @@ def get_glass_dataset(path):
 
     return samples
  
+# 0 n
+# 1 y
+# 2 ?
+# 3 democrat
+# 4 republican
 def get_hv_dataset(path):
     '''
     Return a list containing samples as sample_class, (tuple of features), id
     Attribute names taken from glass.name file'''
 
     dataframe = p.read_csv(path, names = ['house','handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa'])
-
     # transpose the dataframe so that it is easier to pick them by just selecting a column
     data = dataframe.T
-    print data
     # list for storing each individual sample as a list
     list_for_samples = []
     for col in range(data.shape[1]):
-        list_for_samples.append(data[col].tolist())
+      list_for_samples.append(data[col].tolist())
 
 #    print list_for_samples
     # list for storing samples as sample_class, (tuple of features), id as required by the ml program
@@ -181,6 +184,6 @@ def get_hv_dataset(path):
 
 # Not working yet? 
 samples = get_hv_dataset(bc_path)
-#for item in samples:
- #  print item.class_name, item.attribute
-#print len(samples)
+for item in samples:
+  print item.class_name, item.attribute
+print len(samples)
