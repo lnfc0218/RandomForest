@@ -136,11 +136,11 @@ def get_glass_dataset(path):
 
     return samples
  
-# 0 n
-# 1 y
-# 2 ?
-# 3 democrat
-# 4 republican
+# 0 = rep
+# 1 = democ
+# 2 = n
+# 3 = y
+# 4 = ?
 def get_hv_dataset(path):
     '''
     Return a list containing samples as sample_class, (tuple of features), id
