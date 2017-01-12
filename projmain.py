@@ -3,7 +3,7 @@ import numpy
 
 glass_path = "Datasets/glass.data"
 bc_path = "Datasets/breast-cancer-wisconsin.data"
-housevotes_path = "house-votes-84-changed.data"
+housevotes_path = "Datasets/house-votes-84-changed.data"
 
 p.set_option('display.max_row', 1000)
 
@@ -183,7 +183,7 @@ def get_hv_dataset(path):
 # print len(samples)
 
 # Not working yet? 
-samples = get_hv_dataset(bc_path)
+samples = get_hv_dataset(housevotes_path)
 for item in samples:
   print item.class_name, item.attribute
 print len(samples)
