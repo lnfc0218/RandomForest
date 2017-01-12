@@ -3,7 +3,7 @@ import numpy
 
 glass_path = "Datasets/glass.data"
 bc_path = "Datasets/breast-cancer-wisconsin.data"
-housevotes_path = "house-votes-84.data"
+housevotes_path = "house-votes-84-changed.data"
 
 p.set_option('display.max_row', 1000)
 
@@ -59,27 +59,26 @@ bc_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
               Attribute('A3', tuple(numpy.linspace(2,3).tolist())),
               Attribute('A4', tuple(numpy.linspace(2,1).tolist())),
               Attribute('A5', tuple(numpy.linspace(3,2).tolist())),
-              Attribute('A6', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A6', tuple(numpy.linspace(3, 3).tolist())),
               Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
               Attribute('A8', tuple(numpy.linspace(0, 3).tolist())))
 
-hv_attributes = (Attribute('A1', tuple(numpy.linspace(4, 1))),
-              Attribute('A2', tuple(numpy.array(['a']))),
-              Attribute('A3', tuple('f')),
-              Attribute('A4', tuple('f')),
-              Attribute('A5', tuple('f')),
-              Attribute('A6', tuple('f')),
-              Attribute('A7', tuple('f')),
-              Attribute('A8', tuple('f')),
-              Attribute('A9', tuple('f')),
-              Attribute('A10', tuple('f')),
-              Attribute('A11', tuple('f')),
-              Attribute('A12', tuple('f')),
-              Attribute('A13', tuple('f')),
-              Attribute('A14', tuple('f')),
-              Attribute('A16', tuple('f')),
-              Attribute('A17', tuple('f')),
-              Attribute('A18', tuple('f')))
+hv_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
+              Attribute('A2', tuple(numpy.linspace(3,2).tolist())),
+              Attribute('A3', tuple(numpy.linspace(2,3).tolist())),
+              Attribute('A4', tuple(numpy.linspace(2,1).tolist())),
+              Attribute('A5', tuple(numpy.linspace(3,2).tolist())),
+              Attribute('A6', tuple(numpy.linspace(3, 3).tolist())),
+              Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
+              Attribute('A8', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A9', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A10', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A11', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A12', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A13', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A14', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A15', tuple(numpy.linspace(0, 3).tolist())),
+              Attribute('A16', tuple(numpy.linspace(0, 3).tolist())))
 
 
 def get_bc_dataset(path):
@@ -142,20 +141,21 @@ def get_hv_dataset(path):
     Return a list containing samples as sample_class, (tuple of features), id
     Attribute names taken from glass.name file'''
 
-    dataframe = p.read_csv(path, names = ['handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa'])
+    dataframe = p.read_csv(path, names = ['house','handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa'])
 
     # transpose the dataframe so that it is easier to pick them by just selecting a column
     data = dataframe.T
-
+    print data
     # list for storing each individual sample as a list
     list_for_samples = []
     for col in range(data.shape[1]):
         list_for_samples.append(data[col].tolist())
 
+#    print list_for_samples
     # list for storing samples as sample_class, (tuple of features), id as required by the ml program
     structured_data = []
     for row in list_for_samples:
-        structured_data.append([row[-1],tuple(row[1:len(row)-1]),row[0]])
+      structured_data.append([row[0],tuple(row[1:len(row)-1])])
 
     # iterate through items in sampels and return the Sample()
    # print structured_data
@@ -181,6 +181,6 @@ def get_hv_dataset(path):
 
 # Not working yet? 
 samples = get_hv_dataset(bc_path)
-for item in samples:
-   print item.class_name, item.attribute
-print len(samples)
+#for item in samples:
+ #  print item.class_name, item.attribute
+#print len(samples)
