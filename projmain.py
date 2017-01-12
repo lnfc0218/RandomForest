@@ -2,7 +2,7 @@ import pandas as p
 import numpy
 
 glass_path = "Datasets/glass.data"
-bc_path = "Datasets/breast-cancer-wisconsin.data"
+bc_path = "Datasets/breast-cancer-wisconsin-changed.data"
 housevotes_path = "Datasets/house-votes-84-changed.data"
 
 p.set_option('display.max_row', 1000)
@@ -20,7 +20,7 @@ class BCSample:
     "Represenation of data samles"
 
     def __init__(self, sample_class, values, identity):
-        self.sample_class = sample_class
+        self.positive = sample_class  # Changed name so we don't have to change whole code
         self.attribute = dict(zip(bc_attributes, values))
         self.identity = identity
 
@@ -54,14 +54,25 @@ glass_attributes = (Attribute('A1', tuple(numpy.linspace(1.5112,1.5339).tolist()
               Attribute('A9', tuple(numpy.linspace(0, 0.51).tolist())))
 
 
-bc_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
-              Attribute('A2', tuple(numpy.linspace(3,2).tolist())),
-              Attribute('A3', tuple(numpy.linspace(2,3).tolist())),
-              Attribute('A4', tuple(numpy.linspace(2,1).tolist())),
-              Attribute('A5', tuple(numpy.linspace(3,2).tolist())),
-              Attribute('A6', tuple(numpy.linspace(3, 3).tolist())),
-              Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
-              Attribute('A8', tuple(numpy.linspace(0, 3).tolist())))
+# bc_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
+#               Attribute('A2', tuple(numpy.linspace(3,2).tolist())),
+#               Attribute('A3', tuple(numpy.linspace(2,3).tolist())),
+#               Attribute('A4', tuple(numpy.linspace(2,1).tolist())),
+#               Attribute('A5', tuple(numpy.linspace(3,2).tolist())),
+#               Attribute('A6', tuple(numpy.linspace(3, 3).tolist())),
+#               Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
+#               Attribute('A8', tuple(numpy.linspace(0, 3).tolist())))
+#  Don't know reason why set these values for attributes domains
+
+bc_attributes = (Attribute('A1', tuple(range(1,11))),
+              Attribute('A2', tuple(range(1,11))),
+              Attribute('A3', tuple(range(1,11))),
+              Attribute('A4', tuple(range(1,11))),
+              Attribute('A5', tuple(range(1,11))),
+              Attribute('A6', tuple(range(1,11))),
+              Attribute('A7', tuple(range(1,11))),
+              Attribute('A8', tuple(range(1,11))),
+              Attribute('A9', tuple(range(1,11))))
 
 hv_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
               Attribute('A2', tuple(numpy.linspace(3,2).tolist())),
@@ -105,6 +116,10 @@ def get_bc_dataset(path):
    # print structured_data
     samples = ()
     for item in structured_data:
+      if item[0] == 2:
+            item[0] = 0
+      if item[0] == 4:
+            item[0] = 1
       samples += (BCSample(item[0], item[1], item[2]),)
 
     return samples
@@ -183,7 +198,7 @@ def get_hv_dataset(path):
 # print len(samples)
 
 # Not working yet? 
-samples = get_hv_dataset(housevotes_path)
-for item in samples:
-  print item.class_name, item.attribute
-print len(samples)
+# samples = get_hv_dataset(housevotes_path)
+# for item in samples:
+#   print item.class_name, item.attribute
+# print len(samples)

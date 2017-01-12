@@ -143,18 +143,17 @@ def buildTreeMultiple(dataset, attributes, F, maxdepth=1000000):
     if F == 1:
         index = random.randint(0, len(attributes) - 1)  # Select one attribute at random to split
         a = attributes[index]
-        attributesLeft = [x for x in attributes if x != a]
-        branches = [(v, buildBranch(select(dataset, a, v), default, attributesLeft))
-                    for v in a.values]
+
     else: # F > 1
         indeces = random.sample(range(0, len(attributes)), min(F, len(attributes)))  # Select F inputs to split from attributes
         # random.sample(range, number of samples): Sampling without replacement (unique samples)
-        a = list(attributes[i] for i in indeces)  # Select attributes from these inputs
-        attributesLeft = list(set(attributes) - set(a))
+        attributes_selection = list(attributes[i] for i in indeces)  # Select attributes from these inputs
+        a = bestAttribute(dataset, attributes_selection)
 
-        values = [x.values for x in a]
-        branches = [(v, buildBranch(selectMultiple(dataset, a, v), default, attributesLeft))
-                    for v in itertools.product(*values)]
+    attributesLeft = [x for x in attributes if x != a]
+    branches = [(v, buildBranch(select(dataset, a, v), default, attributesLeft))
+                for v in a.values]
+
     return TreeNode(a, dict(branches), default)
 
 def classify(tree, sample):

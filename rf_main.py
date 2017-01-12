@@ -3,17 +3,22 @@ import dtreeclasses
 import math
 import random
 import monkdata as m
+import projmain as parser
 import itertools
 
+
 # Reading data
-data = [m.monk1, m.monk2, m.monk3]
+# data = m.monk1  # Example
+# attributes = m.attributes
+data = parser.get_bc_dataset(parser.bc_path)
+attributes = parser.bc_attributes
 
 partition_percentage = 0.66  # Partition percentage for bootstrap replicas (1/3 left out)
 Number_replicas = 100
 N_times = 100  # Number of times for averaging
 
-M = len(m.attributes)
-list_classes = [x.positive for x in data[0]]  # x.positive indicates class
+M = len(attributes)
+list_classes = [x.positive for x in data]  # x.positive indicates class
 N_classes = len(set(list_classes))
 print("Number of classes:", N_classes)
 # Classes must be indicated as follows: [0,1,.., N_classes-1]
@@ -29,8 +34,9 @@ def main():
     F = math.floor(dtreeclasses.log2(M)+1)  # F: Size of group (number of attributes we are using in each node)
 
     for iteration in range(N_times):  # Loop for averaging errors
+        print("Iteration", iteration)
 
-        training_set, test_set = split_data(data[0])  # Split data between training and test set (90%-10%)
+        training_set, test_set = split_data(data)  # Split data between training and test set (90%-10%)
 
         # Build trees with bagging and random features (Build forest)
         replicas = []  # Bootstrap replicas
@@ -40,8 +46,8 @@ def main():
 
         for i in range(Number_replicas):
             replica, indeces_point = bootstrapReplica(training_set, partition_percentage)
-            treeSingle = dtreeclasses.buildTreeMultiple(replica, m.attributes, F=1)
-            treeMultiple = dtreeclasses.buildTreeMultiple(replica, m.attributes, F)
+            treeSingle = dtreeclasses.buildTreeMultiple(replica, attributes, F=1)
+            treeMultiple = dtreeclasses.buildTreeMultiple(replica, attributes, F)
             # dtreeclasses.buildTreeMultiple(dataset, attributes, F(split number), depth (default = 1000000))
 
             replicas.append(replica)
@@ -50,11 +56,11 @@ def main():
             data_treesMultiple.append(treeMultiple)
 
         # Error calculations
-        OOBSingle += outOfBagError(training_set, data_treesSingle, indeces_points, F=1)
-        OOBMultiple += outOfBagError(training_set, data_treesMultiple, indeces_points, F)
+        OOBSingle += outOfBagError(training_set, data_treesSingle, indeces_points)
+        OOBMultiple += outOfBagError(training_set, data_treesMultiple, indeces_points)
         testE += testSetError(test_set, data_treesSingle)
-        OOBIndividualSingle += outOfBagIndividual(training_set, data_treesSingle, indeces_points, F=1)
-        OOBIndividualMultiple += outOfBagIndividual(training_set, data_treesMultiple, indeces_points, F)
+        OOBIndividualSingle += outOfBagIndividual(training_set, data_treesSingle, indeces_points)
+        OOBIndividualMultiple += outOfBagIndividual(training_set, data_treesMultiple, indeces_points)
 
     # Printing Errors
     OOB = min(OOBSingle, OOBMultiple)  # Lowest OOB error from two groups of inputs
@@ -64,7 +70,7 @@ def main():
     print("Averaged lowest Out-of-bag individual tree error from two groups", OOBIndividual/N_times)
 
 
-def outOfBagIndividual(training_set, data_trees, indeces_points, F):
+def outOfBagIndividual(training_set, data_trees, indeces_points):
     """Computes out-of-bag error for individual tree (averaged over all trees)"""
     accum = 0  # accumulator for averaged error of all individual tree
     for i, tree in enumerate(data_trees):
@@ -72,7 +78,7 @@ def outOfBagIndividual(training_set, data_trees, indeces_points, F):
         count = 0  # counter for number of samples out-of-bag of single tree
         for position, sample in enumerate(training_set):
             if indeces_points[i][position] == False:  # If the sample does not belong to the replica/tree
-                accum1 += int(dtreeclasses.classifyMultiple(tree, sample, F) == sample.positive)
+                accum1 += int(dtreeclasses.classify(tree, sample) == sample.positive)
                 # If sample well classified, +1 in accumulator; otherwise +0. // sample.positive indicates class
                 count += 1
         accum += accum1/count  # Add the error of each single tree over all the out-of-bag samples to total error
@@ -86,7 +92,7 @@ def testSetError(test_set, data_trees):
         votes = [0] * N_classes
         # votes is a list with the number of votes per class
         for tree in data_trees:
-            votes[dtreeclasses.classifyMultiple(tree, sample, F=1)] += 1  # classifyMultiple() returns classification of sample using tree
+            votes[dtreeclasses.classify(tree, sample)] += 1  # classifyMultiple() returns classification of sample using tree
         if votes.index(max(votes)) == sample.positive:  # Again, sample.positive indicates class
             accum += 1
     return 1 - (accum / len(test_set))
@@ -112,7 +118,7 @@ def split_data(dataset):
     return training_set, test_set
 
 
-def outOfBagError(training_set, data_trees, indeces_points, F):
+def outOfBagError(training_set, data_trees, indeces_points):
     """Computes out-of-bag error for forest"""
     accum = 0
     for position, sample in enumerate(training_set):
@@ -120,7 +126,7 @@ def outOfBagError(training_set, data_trees, indeces_points, F):
         # votes is a list with the number of votes per class
         for i, tree in enumerate(data_trees):
             if indeces_points[i][position] == False:  # point does not belongs to replica[i]
-                votes[dtreeclasses.classifyMultiple(tree, sample, F)] += 1  # returns classification of sample using tree
+                votes[dtreeclasses.classify(tree, sample)] += 1  # returns classification of sample using tree
         if votes.index(max(votes)) == sample.positive: # Majority vote =? class
             accum += 1
     return 1 - (accum / len(training_set))
