@@ -14,8 +14,10 @@ import itertools
 # attributes = parser.bc_attributes
 # data = parser.get_hv_dataset(parser.housevotes_path)
 # attributes = parser.hv_attributes
-data = parser.get_glass_dataset(parser.glass_path)
-attributes = parser.glass_attributes
+# data = parser.get_glass_dataset(parser.glass_path)
+# attributes = parser.glass_attributes
+data = parser.get_sonar_dataset(parser.sonar_path)
+attributes = parser.sonar_attributes
 dtreeclasses.set_categ_flag(False)  # Flag for categorical (or non-categorical) inputs)
 
 partition_percentage = 0.66  # Partition percentage for bootstrap replicas (1/3 left out)

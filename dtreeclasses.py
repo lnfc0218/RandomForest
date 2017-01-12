@@ -142,6 +142,8 @@ def buildTreeMultiple(dataset, attributes, F, maxdepth=1000000):
             return TreeLeaf(True)
         if allNegative(dataset):
             return TreeLeaf(False)
+        if not attributes:
+            return TreeLeaf(default)
         return buildTreeMultiple(dataset, attributes, F, maxdepth-1)
 
     default = mostCommon(dataset)

@@ -4,6 +4,8 @@ import numpy
 glass_path = "Datasets/glass.data"
 bc_path = "Datasets/breast-cancer-wisconsin-changed.data"
 housevotes_path = "Datasets/house-votes-84-changed.data"
+sonar_path = "Datasets/sonar-changed.data"
+diabetes_path = "Datasets/pima-indians-diabetes.data"
 
 p.set_option('display.max_row', 1000)
 
@@ -32,6 +34,20 @@ class HouseVotesSample:
         self.positive = class_name
         self.attribute = dict(zip(hv_attributes, values))
 
+class SonarSample:
+    "Representation of data samples"
+
+    def __init__(self, class_name, values):
+        self.positive = class_name
+        self.attribute = dict(zip(sonar_attributes, values))
+
+class DiabetesSample:
+    "Representation of data samples"
+
+    def __init__(self, class_name, values):
+        self.positive = class_name
+        self.attribute = dict(zip(diabetes_attributes, values))
+
 
 class Attribute:
     "Label for each attribute"
@@ -54,6 +70,64 @@ class AttributeC:
     def __repr__(self):
         return self.name
 
+
+N = 2
+d1 = numpy.linspace(0, 17, 18).tolist()[:-1]
+d2 = numpy.linspace(0, 199, (N+1)).tolist()[:-1]
+d3 = numpy.linspace(0, 122, (N+1)).tolist()[:-1]
+d4 = numpy.linspace(0, 99, (N+1)).tolist()[:-1]
+d5 = numpy.linspace(0, 846, (N+1)).tolist()[:-1]
+d6 = numpy.linspace(0, 67.1, (N+1)).tolist()[:-1]
+d7 = numpy.linspace(0, 2.42, (N+1)).tolist()[:-1]
+d8 = numpy.linspace(21, 81, (N+1)).tolist()[:-1]
+
+diabetes_attributes = (AttributeC('A1', tuple(d1), 17/18),
+              AttributeC('A2', tuple(d2), 199/N),
+              AttributeC('A3', tuple(d3), 122/N),
+              AttributeC('A4', tuple(d4), 99/N),
+              AttributeC('A5', tuple(d5), 846/N),
+              AttributeC('A6', tuple(d6), 67.1/N),
+              AttributeC('A7', tuple(d7), 2.42/N),
+              AttributeC('A8', tuple(d8), (81-21)/N))
+
+
+N = 2
+s1 = numpy.linspace(0.0, 1.0, (N+1)).tolist()[:-1]
+
+sonar_attributes = (AttributeC('A1', tuple(numpy.linspace(0,0.1371,N+1).tolist()[:-1]), 0.1371/N),
+AttributeC('A2', tuple(numpy.linspace(0,0.24,N+1).tolist()[:-1]), 0.24/N),
+AttributeC('A3', tuple(numpy.linspace(0,0.31,N+1).tolist()[:-1]), 0.31/N),
+AttributeC('A4', tuple(numpy.linspace(0,0.45,N+1).tolist()[:-1]), 0.45/N),
+AttributeC('A5', tuple(numpy.linspace(0,0.42,N+1).tolist()[:-1]), 0.42/N),
+AttributeC('A6', tuple(numpy.linspace(0,0.4,N+1).tolist()[:-1]), 0.4/N),
+AttributeC('A7', tuple(numpy.linspace(0,0.4,N+1).tolist()[:-1]), 0.4/N),
+AttributeC('A8', tuple(numpy.linspace(0,0.5,N+1).tolist()[:-1]), 0.5/N),
+AttributeC('A9', tuple(numpy.linspace(0,0.7,N+1).tolist()[:-1]), 0.7/N),
+AttributeC('A10', tuple(numpy.linspace(0,0.72,N+1).tolist()[:-1]), 0.72/N),
+AttributeC('A11', tuple(numpy.linspace(0,0.75,N+1).tolist()[:-1]), 0.75/N),
+AttributeC('A12', tuple(numpy.linspace(0,0.71,N+1).tolist()[:-1]), 0.71/N),
+AttributeC('A13', tuple(numpy.linspace(0,0.72,N+1).tolist()[:-1]), 0.72/N))
+for i in range(14,43):
+    sonar_attributes += (AttributeC('A'+str(i+1), tuple(s1), 1/N),)
+sonar_attributes2 = (AttributeC('A43', tuple(numpy.linspace(0,0.78,N+1).tolist()[:-1]), 0.78/N),
+AttributeC('A44', tuple(numpy.linspace(0,0.78,N+1).tolist()[:-1]), 0.78/N),
+AttributeC('A45', tuple(numpy.linspace(0,0.78,N+1).tolist()[:-1]), 0.78/N),
+AttributeC('A46', tuple(numpy.linspace(0,0.73,N+1).tolist()[:-1]), 0.73/N),
+AttributeC('A47', tuple(numpy.linspace(0,0.6,N+1).tolist()[:-1]), 0.6/N),
+AttributeC('A48', tuple(numpy.linspace(0,0.35,N+1).tolist()[:-1]), 0.35/N),
+AttributeC('A49', tuple(numpy.linspace(0,0.2,N+1).tolist()[:-1]), 0.2/N),
+AttributeC('A50', tuple(numpy.linspace(0,0.1,N+1).tolist()[:-1]), 0.1/N),
+AttributeC('A51', tuple(numpy.linspace(0,0.11,N+1).tolist()[:-1]), 0.11/N),
+AttributeC('A52', tuple(numpy.linspace(0,0.08,N+1).tolist()[:-1]), 0.08/N),
+AttributeC('A53', tuple(numpy.linspace(0,0.04,N+1).tolist()[:-1]), 0.04/N),
+AttributeC('A54', tuple(numpy.linspace(0,0.04,N+1).tolist()[:-1]), 0.04/N),
+AttributeC('A55', tuple(numpy.linspace(0,0.05,N+1).tolist()[:-1]), 0.05/N),
+AttributeC('A56', tuple(numpy.linspace(0,0.04,N+1).tolist()[:-1]), 0.04/N),
+AttributeC('A57', tuple(numpy.linspace(0,0.04,N+1).tolist()[:-1]), 0.04/N),
+AttributeC('A58', tuple(numpy.linspace(0,0.05,N+1).tolist()[:-1]), 0.05/N),
+AttributeC('A59', tuple(numpy.linspace(0,0.04,N+1).tolist()[:-1]), 0.04/N),
+AttributeC('A60', tuple(numpy.linspace(0,0.05,N+1).tolist()[:-1]), 0.05/N))
+sonar_attributes += sonar_attributes2
 
 # glass_attributes = (Attribute('A1', tuple(numpy.linspace(1.5112,1.5339).tolist())),
 #               Attribute('A2', tuple(numpy.linspace(10.73,17.38).tolist())),
@@ -240,7 +314,97 @@ def get_hv_dataset(path):
       samples += (HouseVotesSample(item[0], item[1]),)
 
     return samples
+
+
+def get_sonar_dataset(path):
+    '''
+    Return a list containing samples as sample_class, (tuple of features), id
+    Attribute names taken from sonar.name file'''
+
+    names1 = ['Fr1', 'Fr2', 'Fr3', 'Fr4', 'Fr5', 'Fr6', 'Fr7', 'Fr8', 'Fr9', 'Fr10']
+    names2 = ['Fr11', 'Fr12', 'Fr13', 'Fr14', 'Fr15', 'Fr16', 'Fr17', 'Fr18', 'Fr19', 'Fr20']
+    names3 = ['Fr21', 'Fr22', 'Fr23', 'Fr24', 'Fr25', 'Fr26', 'Fr27', 'Fr28', 'Fr29', 'Fr30']
+    names4 = ['Fr31', 'Fr32', 'Fr33', 'Fr34', 'Fr35', 'Fr36', 'Fr37', 'Fr38', 'Fr39', 'Fr40']
+    names5 = ['Fr41', 'Fr42', 'Fr43', 'Fr44', 'Fr45', 'Fr46', 'Fr47', 'Fr48', 'Fr49', 'Fr50']
+    names6 = ['Fr51', 'Fr52', 'Fr53', 'Fr54', 'Fr55', 'Fr56', 'Fr57', 'Fr58', 'Fr59', 'Fr60', 'Type']
+    names = names1+names2+names3+names4+names5+names6
+    dataframe = p.read_csv(path, names = names)
+
+    # transpose the dataframe so that it is easier to pick them by just selecting a column
+    data = dataframe.T
+
+    # list for storing each individual sample as a list
+    list_for_samples = []
+    for col in range(data.shape[1]):
+        list_for_samples.append(data[col].tolist())
+
+    # total_list = []
+    # for k in range(60):
+    #     new_list = []
+    #     for item in list_for_samples:
+    #         new_list.append(item[k])
+    #     total_list.append(new_list)
+    # print(total_list)
+
+    # maximums = [max(x) for x in total_list]
+    # minimums = [min(x) for x in total_list]
+    # for i, item in enumerate(maximums):
+    #     print(i+1, minimums[i], item)
+
+
+    # list for storing samples as sample_class, (tuple of features), id as required by the ml program
+    structured_data = []
+    for row in list_for_samples:
+        structured_data.append([row[-1],tuple(row[0:len(row)-1])])
+
+    # iterate through items in sampels and return the Sample()
+    samples = ()
+    for item in structured_data:
+      samples += (SonarSample(item[0], item[1]),)
+
+    return samples
  
+
+def get_diabetes_dataset(path):
+    '''
+    Return a list containing samples as sample_class, (tuple of features), id
+    Attribute names taken from pima-indians-diabetes.name file'''
+
+    dataframe = p.read_csv(path, names = ['Times pregnant', 'Plasma glucose concentration', 'Plasma glucose concentration ', 'Triceps skin fold thickness', '2-Hour serum insulin', 'Body mass index', 'Diabetes pedigree function', 'Age', 'Type'])
+
+    # transpose the dataframe so that it is easier to pick them by just selecting a column
+    data = dataframe.T
+
+    # list for storing each individual sample as a list
+    list_for_samples = []
+    for col in range(data.shape[1]):
+        list_for_samples.append(data[col].tolist())
+
+    # total_list = []
+    # for k in range(8):
+    #     new_list = []
+    #     for item in list_for_samples:
+    #         new_list.append(item[k])
+    #     total_list.append(new_list)
+    # print(total_list)
+    #
+    # maximums = [max(x) for x in total_list]
+    # minimums = [min(x) for x in total_list]
+    # for i, item in enumerate(maximums):
+    #     print(i+1, minimums[i], item)
+
+    # list for storing samples as sample_class, (tuple of features), id as required by the ml program
+    structured_data = []
+    for row in list_for_samples:
+        structured_data.append([row[-1],tuple(row[0:len(row)-1])])
+
+    # iterate through items in sampels and return the Sample()
+    samples = ()
+    for item in structured_data:
+      samples += (DiabetesSample(item[0], item[1]),)
+
+    return samples
+
 
 # Example for glass dataset
 # samples = get_glass_dataset(glass_path)
@@ -248,15 +412,26 @@ def get_hv_dataset(path):
 # for item in samples:
 #    print item.sample_class, item.attribute, item.identity
 
-
 # # Example for bc dataset
 # samples = get_bc_dataset(bc_path)
 # for item in samples:
 #    print item.sample_class, item.attribute, item.identity
 # print len(samples)
 
-# Not working yet? 
+# # Example for housevotes dataset
 # samples = get_hv_dataset(housevotes_path)
 # for item in samples:
 #   print item.class_name, item.attribute
 # print len(samples)
+
+# # Example for sonar dataset
+# samples = get_sonar_dataset(sonar_path)
+# for item in samples:
+#    print (item.positive, item.attribute)
+# print (len(samples))
+
+# # Example for diabetes dataset
+# samples = get_diabetes_dataset(diabetes_path)
+# for item in samples:
+#    print (item.positive, item.attribute)
+# print (len(samples))
