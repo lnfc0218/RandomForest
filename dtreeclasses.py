@@ -2,6 +2,12 @@ import math
 import random
 import itertools
 
+categ = True
+def set_categ_flag(boolean_value):
+    """Set categorical variables flag to True or False"""
+    global categ
+    categ = boolean_value
+
 def entropy(dataset):
     "Calculate the entropy of a dataset"
     n = len(dataset)
@@ -29,7 +35,10 @@ def log2(x):
 
 def select(dataset, attribute, value):
     "Return subset of data samples where the attribute has the given value"
-    return [x for x in dataset if x.attribute[attribute] == value]
+    if categ == True:
+        return [x for x in dataset if x.attribute[attribute] == value]
+    else:
+        return [x for x in dataset if x.attribute[attribute] >= value and x.attribute[attribute] <= (value + attribute.interval)]
 
 def selectMultiple(dataset, attribute, value):
     "Return subset of data samples where the attributes have the given values (multiple splitting at nodes)"
@@ -160,7 +169,16 @@ def classify(tree, sample):
     "Classify a sample using the given decision tree"
     if isinstance(tree, TreeLeaf):
         return tree.cvalue
-    return classify(tree.branches[sample.attribute[tree.attribute]], sample)
+    if categ == False:  # Code to be able to use the float numbers of tree.attribute.values as keys for dict.
+        i = len(tree.attribute.values)-1
+        attri_value = tree.attribute.values[i]  # Greater value of list
+        while sample.attribute[tree.attribute] < attri_value:  # Because we always round to the smaller value
+            i -= 1
+            attri_value = tree.attribute.values[i]
+        return classify(tree.branches[attri_value], sample)
+
+    else:
+        return classify(tree.branches[sample.attribute[tree.attribute]], sample)
 
 
 def classifyMultiple(tree, sample, F):

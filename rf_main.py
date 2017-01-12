@@ -12,8 +12,11 @@ import itertools
 # attributes = m.attributes
 # data = parser.get_bc_dataset(parser.bc_path)
 # attributes = parser.bc_attributes
-data = parser.get_hv_dataset(parser.housevotes_path)
-attributes = parser.hv_attributes
+# data = parser.get_hv_dataset(parser.housevotes_path)
+# attributes = parser.hv_attributes
+data = parser.get_glass_dataset(parser.glass_path)
+attributes = parser.glass_attributes
+dtreeclasses.set_categ_flag(False)  # Flag for categorical (or non-categorical) inputs)
 
 partition_percentage = 0.66  # Partition percentage for bootstrap replicas (1/3 left out)
 Number_replicas = 100

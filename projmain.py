@@ -9,15 +9,16 @@ p.set_option('display.max_row', 1000)
 
 
 class GlassSample:
-    "Represenation of data samles"
+    "Representation of data samples"
 
     def __init__(self, sample_class, values, identity):
-        self.sample_class = sample_class
+        # self.sample_class = sample_class
+        self.positive = sample_class  # Changed for easiness. When multiple classes implemented, change back
         self.attribute = dict(zip(glass_attributes, values))
         self.identity = identity
 
 class BCSample:
-    "Represenation of data samles"
+    "Representation of data samples"
 
     def __init__(self, sample_class, values, identity):
         self.positive = sample_class  # Changed name so we don't have to change whole code
@@ -42,16 +43,53 @@ class Attribute:
     def __repr__(self):
         return self.name
 
+class AttributeC:
+    "Label for each attribute when continuous inputs"
 
-glass_attributes = (Attribute('A1', tuple(numpy.linspace(1.5112,1.5339).tolist())),
-              Attribute('A2', tuple(numpy.linspace(10.73,17.38).tolist())),
-              Attribute('A3', tuple(numpy.linspace(0 , 4.49).tolist())),
-              Attribute('A4', tuple(numpy.linspace(0.29, 3.5).tolist())),
-              Attribute('A5', tuple(numpy.linspace(69.81, 75.41).tolist())),
-              Attribute('A6', tuple(numpy.linspace(0, 6.21).tolist())),
-              Attribute('A7', tuple(numpy.linspace(5.43, 16.19).tolist())),
-              Attribute('A8', tuple(numpy.linspace(0, 3.15).tolist())),
-              Attribute('A9', tuple(numpy.linspace(0, 0.51).tolist())))
+    def __init__(self, name, values, interval):
+        self.name = name
+        self.values = values
+        self.interval = interval
+
+    def __repr__(self):
+        return self.name
+
+
+# glass_attributes = (Attribute('A1', tuple(numpy.linspace(1.5112,1.5339).tolist())),
+#               Attribute('A2', tuple(numpy.linspace(10.73,17.38).tolist())),
+#               Attribute('A3', tuple(numpy.linspace(0 , 4.49).tolist())),
+#               Attribute('A4', tuple(numpy.linspace(0.29, 3.5).tolist())),
+#               Attribute('A5', tuple(numpy.linspace(69.81, 75.41).tolist())),
+#               Attribute('A6', tuple(numpy.linspace(0, 6.21).tolist())),
+#               Attribute('A7', tuple(numpy.linspace(5.43, 16.19).tolist())),
+#               Attribute('A8', tuple(numpy.linspace(0, 3.15).tolist())),
+#               Attribute('A9', tuple(numpy.linspace(0, 0.51).tolist())))
+
+N = 15  # Number of bins per attribute
+
+# For each attribute, we make N bins between min and max values.
+# bin = [min_Value, min_Value + interval]
+# To do so, we use np.linspace and delete last element
+# interval computed as (max_Value - min_Value) / N (see below)
+a1 = numpy.linspace(1.5112, 1.5339, (N+1)).tolist()[:-1]
+a2 = numpy.linspace(10.73, 17.38, (N+1)).tolist()[:-1]
+a3 = numpy.linspace(0, 4.49, (N+1)).tolist()[:-1]
+a4 = numpy.linspace(0.29, 3.5, (N+1)).tolist()[:-1]
+a5 = numpy.linspace(69.81, 75.41, (N+1)).tolist()[:-1]
+a6 = numpy.linspace(0, 6.21, (N+1)).tolist()[:-1]
+a7 = numpy.linspace(5.43, 16.19, (N+1)).tolist()[:-1]
+a8 = numpy.linspace(0, 3.15,(N+1)).tolist()[:-1]
+a9 = numpy.linspace(0, 0.51,(N+1)).tolist()[:-1]
+
+glass_attributes = (AttributeC('A1', tuple(a1), (1.5339-1.5112)/N),
+              AttributeC('A2', tuple(a2), (17.38-10.73)/N),
+              AttributeC('A3', tuple(a3), (4.49-0)/N),
+              AttributeC('A4', tuple(a4), (3.5-0.29)/N),
+              AttributeC('A5', tuple(a5), (75.41-69.81)/N),
+              AttributeC('A6', tuple(a6), (6.21-0)/N),
+              AttributeC('A7', tuple(a7), (16.19-5.43)/N),
+              AttributeC('A8', tuple(a8), (3.15-0)/N),
+              AttributeC('A9', tuple(a9), (0.51-0)/N))
 
 
 # bc_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
@@ -164,8 +202,10 @@ def get_glass_dataset(path):
 
     # iterate through items in sampels and return the Sample()
     samples = ()
-    for item in structured_data:
-      samples += (GlassSample(item[0], item[1], item[2]),)
+    for item in structured_data[:130]:  # So that we only have two classes and is testable with the code
+        samples += (GlassSample(item[0]-1, item[1], item[2]),)
+    # for item in structured_data:
+    #   samples += (GlassSample(item[0], item[1], item[2]),)
 
     return samples
  
