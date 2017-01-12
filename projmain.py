@@ -28,7 +28,7 @@ class HouseVotesSample:
     "Represenation of data samles"
 
     def __init__(self, class_name, values):
-        self.class_name = class_name
+        self.positive = class_name
         self.attribute = dict(zip(hv_attributes, values))
 
 
@@ -62,8 +62,8 @@ glass_attributes = (Attribute('A1', tuple(numpy.linspace(1.5112,1.5339).tolist()
 #               Attribute('A6', tuple(numpy.linspace(3, 3).tolist())),
 #               Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
 #               Attribute('A8', tuple(numpy.linspace(0, 3).tolist())))
-#  Don't know reason why set these values for attributes domains
 
+#  Don't know reason why set these previous values for attributes domains
 bc_attributes = (Attribute('A1', tuple(range(1,11))),
               Attribute('A2', tuple(range(1,11))),
               Attribute('A3', tuple(range(1,11))),
@@ -74,22 +74,40 @@ bc_attributes = (Attribute('A1', tuple(range(1,11))),
               Attribute('A8', tuple(range(1,11))),
               Attribute('A9', tuple(range(1,11))))
 
-hv_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
-              Attribute('A2', tuple(numpy.linspace(3,2).tolist())),
-              Attribute('A3', tuple(numpy.linspace(2,3).tolist())),
-              Attribute('A4', tuple(numpy.linspace(2,1).tolist())),
-              Attribute('A5', tuple(numpy.linspace(3,2).tolist())),
-              Attribute('A6', tuple(numpy.linspace(3, 3).tolist())),
-              Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
-              Attribute('A8', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A9', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A10', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A11', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A12', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A13', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A14', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A15', tuple(numpy.linspace(0, 3).tolist())),
-              Attribute('A16', tuple(numpy.linspace(0, 3).tolist())))
+# hv_attributes = (Attribute('A1', tuple(numpy.linspace(3,4).tolist())),
+#               Attribute('A2', tuple(numpy.linspace(3,2).tolist())),
+#               Attribute('A3', tuple(numpy.linspace(2,3).tolist())),
+#               Attribute('A4', tuple(numpy.linspace(2,1).tolist())),
+#               Attribute('A5', tuple(numpy.linspace(3,2).tolist())),
+#               Attribute('A6', tuple(numpy.linspace(3, 3).tolist())),
+#               Attribute('A7', tuple(numpy.linspace(5, 16).tolist())),
+#               Attribute('A8', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A9', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A10', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A11', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A12', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A13', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A14', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A15', tuple(numpy.linspace(0, 3).tolist())),
+#               Attribute('A16', tuple(numpy.linspace(0, 3).tolist())))
+
+#  Don't know reason why set these previous values for attributes domains
+hv_attributes = (Attribute('A1', (2, 3, 4)),
+              Attribute('A2', (2, 3, 4)),
+              Attribute('A3', (2, 3, 4)),
+              Attribute('A4', (2, 3, 4)),
+              Attribute('A5', (2, 3, 4)),
+              Attribute('A6', (2, 3, 4)),
+              Attribute('A7', (2, 3, 4)),
+              Attribute('A8', (2, 3, 4)),
+              Attribute('A9', (2, 3, 4)),
+              Attribute('A10', (2, 3, 4)),
+              Attribute('A11', (2, 3, 4)),
+              Attribute('A12', (2, 3, 4)),
+              Attribute('A13', (2, 3, 4)),
+              Attribute('A14', (2, 3, 4)),
+              Attribute('A15', (2, 3, 4)),
+              Attribute('A16', (2, 3, 4)))
 
 
 def get_bc_dataset(path):
@@ -173,7 +191,7 @@ def get_hv_dataset(path):
     # list for storing samples as sample_class, (tuple of features), id as required by the ml program
     structured_data = []
     for row in list_for_samples:
-      structured_data.append([row[0],tuple(row[1:len(row)-1])])
+      structured_data.append([row[0],tuple(row[1:len(row)])])
 
     # iterate through items in sampels and return the Sample()
    # print structured_data

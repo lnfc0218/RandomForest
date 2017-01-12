@@ -10,8 +10,10 @@ import itertools
 # Reading data
 # data = m.monk1  # Example
 # attributes = m.attributes
-data = parser.get_bc_dataset(parser.bc_path)
-attributes = parser.bc_attributes
+# data = parser.get_bc_dataset(parser.bc_path)
+# attributes = parser.bc_attributes
+data = parser.get_hv_dataset(parser.housevotes_path)
+attributes = parser.hv_attributes
 
 partition_percentage = 0.66  # Partition percentage for bootstrap replicas (1/3 left out)
 Number_replicas = 100
