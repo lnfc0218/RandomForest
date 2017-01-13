@@ -6,6 +6,7 @@ bc_path = "Datasets/breast-cancer-wisconsin-changed.data"
 housevotes_path = "Datasets/house-votes-84-changed.data"
 sonar_path = "Datasets/sonar-changed.data"
 diabetes_path = "Datasets/pima-indians-diabetes.data"
+vehicles_path = "Datasets/vehicle-changed.txt"
 
 p.set_option('display.max_row', 1000)
 
@@ -48,6 +49,13 @@ class DiabetesSample:
         self.positive = class_name
         self.attribute = dict(zip(diabetes_attributes, values))
 
+class VehiclesSample:
+    "Representation of data samples"
+
+    def __init__(self, class_name, values):
+        self.positive = class_name
+        self.attribute = dict(zip(vehicles_attributes, values))
+
 
 class Attribute:
     "Label for each attribute"
@@ -69,6 +77,27 @@ class AttributeC:
 
     def __repr__(self):
         return self.name
+
+
+N=2
+vehicles_attributes = (AttributeC('A1', tuple(numpy.linspace(73,119,N+1).tolist()[:-1]), (119-73)/N),
+AttributeC('A2', tuple(numpy.linspace(33,59,N+1).tolist()[:-1]), (59-33)/N),
+AttributeC('A3', tuple(numpy.linspace(40,112,N+1).tolist()[:-1]), (112-40)/N),
+AttributeC('A4', tuple(numpy.linspace(104,333,N+1).tolist()[:-1]), (333-104)/N),
+AttributeC('A5', tuple(numpy.linspace(47,138,N+1).tolist()[:-1]), (138-47)/N),
+AttributeC('A6', tuple(numpy.linspace(2,55,N+1).tolist()[:-1]), (55-2)/N),
+AttributeC('A7', tuple(numpy.linspace(112,265,N+1).tolist()[:-1]), (265-112)/N),
+AttributeC('A8', tuple(numpy.linspace(26,61,N+1).tolist()[:-1]), (61-26)/N),
+AttributeC('A9', tuple(numpy.linspace(17,29,N+1).tolist()[:-1]), (29-17)/N),
+AttributeC('A10', tuple(numpy.linspace(118,188,N+1).tolist()[:-1]), (188-118)/N),
+AttributeC('A11', tuple(numpy.linspace(130,320,N+1).tolist()[:-1]), (320-130)/N),
+AttributeC('A12', tuple(numpy.linspace(184,1018,N+1).tolist()[:-1]), (1018-184)/N),
+AttributeC('A13', tuple(numpy.linspace(109,268,N+1).tolist()[:-1]), (268-109)/N),
+AttributeC('A14', tuple(numpy.linspace(59,135,N+1).tolist()[:-1]), (135-59)/N),
+AttributeC('A15', tuple(numpy.linspace(0,22,N+1).tolist()[:-1]), (22-0)/N),
+AttributeC('A16', tuple(numpy.linspace(0,41,N+1).tolist()[:-1]), (41-0)/N),
+AttributeC('A17', tuple(numpy.linspace(176,206,N+1).tolist()[:-1]), (206-176)/N),
+AttributeC('A18', tuple(numpy.linspace(181,211,N+1).tolist()[:-1]), (211-181)/N))
 
 
 N = 2
@@ -406,6 +435,50 @@ def get_diabetes_dataset(path):
     return samples
 
 
+# 0 = opel
+# 1 = saab
+# 2 = bus
+# 3 = van
+def get_vehicles_dataset(path):
+    '''
+    Return a list containing samples as sample_class, (tuple of features), id
+    Attribute names taken from vehicles.name file'''
+
+    dataframe = p.read_csv(path, names = ['COMPACTNESS', 'CIRCULARITY', 'DISTANCE CIRCULARITY', 'RADIUS RATIO', 'PR.AXIS ASPECT RATIO', 'MAX.LENGTH ASPECT RATIO', 'SCATTER RATIO', 'ELONGATEDNESS','PR.AXIS RECTANGULARITY', 'MAX.LENGTH RECTANGULARITY', 'SCALED VARIANCE 1', 'SCALED VARIANCE 2', 'SCALED RADIUS', 'SKEWNESS 1', 'SKEWNESS 2', 'KURTOSIS 1', 'KURTOSIS 2', 'HOLLOWS RATIO', 'Type'])
+
+    # transpose the dataframe so that it is easier to pick them by just selecting a column
+    data = dataframe.T
+
+    # list for storing each individual sample as a list
+    list_for_samples = []
+    for col in range(data.shape[1]):
+        list_for_samples.append(data[col].tolist())
+
+    # total_list = []
+    # for k in range(18):
+    #     new_list = []
+    #     for item in list_for_samples:
+    #         new_list.append(item[k])
+    #     total_list.append(new_list)
+    # # print(total_list)
+    #
+    # maximums = [max(x) for x in total_list]
+    # minimums = [min(x) for x in total_list]
+    # for i, item in enumerate(maximums):
+    #     print(i+1, minimums[i], item)
+
+    # list for storing samples as sample_class, (tuple of features), id as required by the ml program
+    structured_data = []
+    for row in list_for_samples:
+        structured_data.append([row[-1],tuple(row[0:len(row)-1])])
+
+    # iterate through items in sampels and return the Sample()
+    samples = ()
+    for item in structured_data:
+      samples += (VehiclesSample(item[0], item[1]),)
+
+    return samples
+
 # Example for glass dataset
 # samples = get_glass_dataset(glass_path)
 # print len(samples)
@@ -432,6 +505,12 @@ def get_diabetes_dataset(path):
 
 # # Example for diabetes dataset
 # samples = get_diabetes_dataset(diabetes_path)
+# for item in samples:
+#    print (item.positive, item.attribute)
+# print (len(samples))
+
+# # Example for vehicles dataset
+# samples = get_vehicles_dataset(vehicles_path)
 # for item in samples:
 #    print (item.positive, item.attribute)
 # print (len(samples))

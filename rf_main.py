@@ -16,8 +16,8 @@ import itertools
 # attributes = parser.hv_attributes
 # data = parser.get_glass_dataset(parser.glass_path)
 # attributes = parser.glass_attributes
-data = parser.get_sonar_dataset(parser.sonar_path)
-attributes = parser.sonar_attributes
+data = parser.get_vehicles_dataset(parser.vehicles_path)
+attributes = parser.vehicles_attributes
 dtreeclasses.set_categ_flag(False)  # Flag for categorical (or non-categorical) inputs)
 
 partition_percentage = 0.66  # Partition percentage for bootstrap replicas (1/3 left out)
@@ -26,6 +26,7 @@ N_times = 100  # Number of times for averaging
 
 M = len(attributes)
 list_classes = [x.positive for x in data]  # x.positive indicates class
+list_classes = list(set(list_classes))
 N_classes = len(set(list_classes))
 print("Number of classes:", N_classes)
 # Classes must be indicated as follows: [0,1,.., N_classes-1]
@@ -53,8 +54,8 @@ def main():
 
         for i in range(Number_replicas):
             replica, indeces_point = bootstrapReplica(training_set, partition_percentage)
-            treeSingle = dtreeclasses.buildTreeMultiple(replica, attributes, F=1)
-            treeMultiple = dtreeclasses.buildTreeMultiple(replica, attributes, F)
+            treeSingle = dtreeclasses.buildTreeMultiple(replica, attributes,list_classes, F=1)
+            treeMultiple = dtreeclasses.buildTreeMultiple(replica, attributes, list_classes, F)
             # dtreeclasses.buildTreeMultiple(dataset, attributes, F(split number), depth (default = 1000000))
 
             replicas.append(replica)
@@ -85,7 +86,7 @@ def outOfBagIndividual(training_set, data_trees, indeces_points):
         count = 0  # counter for number of samples out-of-bag of single tree
         for position, sample in enumerate(training_set):
             if indeces_points[i][position] == False:  # If the sample does not belong to the replica/tree
-                accum1 += int(dtreeclasses.classify(tree, sample) == sample.positive)
+                accum1 += (int(dtreeclasses.classify(tree, sample)) == int(sample.positive))
                 # If sample well classified, +1 in accumulator; otherwise +0. // sample.positive indicates class
                 count += 1
         accum += accum1/count  # Add the error of each single tree over all the out-of-bag samples to total error
@@ -99,8 +100,8 @@ def testSetError(test_set, data_trees):
         votes = [0] * N_classes
         # votes is a list with the number of votes per class
         for tree in data_trees:
-            votes[dtreeclasses.classify(tree, sample)] += 1  # classifyMultiple() returns classification of sample using tree
-        if votes.index(max(votes)) == sample.positive:  # Again, sample.positive indicates class
+            votes[int(dtreeclasses.classify(tree, sample))] += 1  # classifyMultiple() returns classification of sample using tree
+        if votes.index(max(votes)) == int(sample.positive):  # Again, sample.positive indicates class
             accum += 1
     return 1 - (accum / len(test_set))
 
@@ -133,8 +134,8 @@ def outOfBagError(training_set, data_trees, indeces_points):
         # votes is a list with the number of votes per class
         for i, tree in enumerate(data_trees):
             if indeces_points[i][position] == False:  # point does not belongs to replica[i]
-                votes[dtreeclasses.classify(tree, sample)] += 1  # returns classification of sample using tree
-        if votes.index(max(votes)) == sample.positive: # Majority vote =? class
+                votes[int(dtreeclasses.classify(tree, sample))] += 1  # returns classification of sample using tree
+        if votes.index(max(votes)) == int(sample.positive): # Majority vote =? class
             accum += 1
     return 1 - (accum / len(training_set))
 

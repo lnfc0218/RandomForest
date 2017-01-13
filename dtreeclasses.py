@@ -8,24 +8,37 @@ def set_categ_flag(boolean_value):
     global categ
     categ = boolean_value
 
-def entropy(dataset):
-    "Calculate the entropy of a dataset"
+# def entropy(dataset):
+#     "Calculate the entropy of a dataset"
+#     n = len(dataset)
+#     nPos = len([x for x in dataset if x.positive])
+#     nNeg = n - nPos
+#     if nPos == 0 or nNeg == 0:
+#         return 0.0
+#     return -float(nPos)/n * log2(float(nPos)/n) + \
+#         -float(nNeg)/n * log2(float(nNeg)/n)
+
+def entropy(dataset, classes):
+    "Calculate the entropy of a dataset for several classes"
     n = len(dataset)
-    nPos = len([x for x in dataset if x.positive])
-    nNeg = n - nPos
-    if nPos == 0 or nNeg == 0:
-        return 0.0
-    return -float(nPos)/n * log2(float(nPos)/n) + \
-        -float(nNeg)/n * log2(float(nNeg)/n)
+    nSamples = []
+    for clas in classes:
+        nSamples.append(len([x for x in dataset if x.positive == clas]))
+    totalEntropy = 0
+    for number in nSamples:
+        if number == 0:
+            continue
+        totalEntropy += -float(number)/n * log2(float(number)/n)
+    return totalEntropy
 
 
-def averageGain(dataset, attribute):
+def averageGain(dataset, attribute, classes):
     "Calculate the expected information gain when an attribute becomes known"
     weighted = 0.0
     for v in attribute.values:
         subset = select(dataset, attribute, v)
-        weighted += entropy(subset) * len(subset)
-    return entropy(dataset) - weighted/len(dataset)
+        weighted += entropy(subset, classes) * len(subset)
+    return entropy(dataset, classes) - weighted/len(dataset)
 
 
 def log2(x):
@@ -55,9 +68,9 @@ def selectMultiple(dataset, attribute, value):
     return subset
 
 
-def bestAttribute(dataset, attributes):
+def bestAttribute(dataset, attributes, classes):
     "Attribute with highest expected information gain"
-    gains = [(averageGain(dataset, a), a) for a in attributes]
+    gains = [(averageGain(dataset, a, classes), a) for a in attributes]
     return max(gains, key=lambda x: x[0])[1]
     # Compare elements of list "gains" based on its first index value and return second index value of selected element
 
@@ -72,11 +85,24 @@ def allNegative(dataset):
     return not any([x.positive for x in dataset])
 
 
+def allSameClass(dataset, clas):
+    """Checks if all samples of same class"""
+    return all([x.positive == clas for x in dataset])
+
+
 def mostCommon(dataset):
     "Majority class of the dataset"
     pCount = len([x for x in dataset if x.positive])
     nCount = len([x for x in dataset if not x.positive])
     return pCount > nCount
+
+
+def mostCommon(dataset, classes):
+    "Majority class of the dataset for several classes"
+    number = []
+    for clas in classes:
+        number.append(len([x for x in dataset if x.positive == clas]))
+    return number.index(max(number))
 
 
 class TreeNode:
@@ -132,21 +158,31 @@ def buildTree(dataset, attributes, maxdepth=1000000):
                 for v in a.values]
     return TreeNode(a, dict(branches), default)
 
-def buildTreeMultiple(dataset, attributes, F, maxdepth=1000000):
+def buildTreeMultiple(dataset, attributes, classes, F, maxdepth=1000000):
     "Recursively build a decision tree (multiple splitting at nodes)"
 
-    def buildBranch(dataset, default, attributes):
+    # def buildBranch(dataset, default, attributes):
+    #     if not dataset:
+    #         return TreeLeaf(default)
+    #     if allPositive(dataset):
+    #         return TreeLeaf(True)
+    #     if allNegative(dataset):
+    #         return TreeLeaf(False)
+    #     if not attributes:
+    #         return TreeLeaf(default)
+    #     return buildTreeMultiple(dataset, attributes, F, maxdepth-1)
+
+    def buildBranch(dataset, default, attributes, classes):
         if not dataset:
             return TreeLeaf(default)
-        if allPositive(dataset):
-            return TreeLeaf(True)
-        if allNegative(dataset):
-            return TreeLeaf(False)
+        for clas in classes:
+            if allSameClass(dataset, clas):
+                return TreeLeaf(clas)
         if not attributes:
             return TreeLeaf(default)
-        return buildTreeMultiple(dataset, attributes, F, maxdepth-1)
+        return buildTreeMultiple(dataset, attributes, classes, F, maxdepth-1)
 
-    default = mostCommon(dataset)
+    default = mostCommon(dataset, classes)
     if maxdepth < 1:
         return TreeLeaf(default)
     # a = bestAttribute(dataset, attributes)  # Select best attribute to split
@@ -159,10 +195,10 @@ def buildTreeMultiple(dataset, attributes, F, maxdepth=1000000):
         indeces = random.sample(range(0, len(attributes)), min(F, len(attributes)))  # Select F inputs to split from attributes
         # random.sample(range, number of samples): Sampling without replacement (unique samples)
         attributes_selection = list(attributes[i] for i in indeces)  # Select attributes from these inputs
-        a = bestAttribute(dataset, attributes_selection)
+        a = bestAttribute(dataset, attributes_selection, classes)
 
     attributesLeft = [x for x in attributes if x != a]
-    branches = [(v, buildBranch(select(dataset, a, v), default, attributesLeft))
+    branches = [(v, buildBranch(select(dataset, a, v), default, attributesLeft, classes))
                 for v in a.values]
 
     return TreeNode(a, dict(branches), default)
@@ -171,6 +207,7 @@ def classify(tree, sample):
     "Classify a sample using the given decision tree"
     if isinstance(tree, TreeLeaf):
         return tree.cvalue
+
     if categ == False:  # Code to be able to use the float numbers of tree.attribute.values as keys for dict.
         i = len(tree.attribute.values)-1
         attri_value = tree.attribute.values[i]  # Greater value of list
