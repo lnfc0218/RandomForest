@@ -12,13 +12,13 @@ import itertools
 # attributes = m.attributes
 # data = parser.get_bc_dataset(parser.bc_path)
 # attributes = parser.bc_attributes
-# data = parser.get_hv_dataset(parser.housevotes_path)
-# attributes = parser.hv_attributes
+data = parser.get_hv_dataset(parser.housevotes_path)
+attributes = parser.hv_attributes
 # data = parser.get_glass_dataset(parser.glass_path)
 # attributes = parser.glass_attributes
-data = parser.get_vehicles_dataset(parser.vehicles_path)
-attributes = parser.vehicles_attributes
-dtreeclasses.set_categ_flag(False)  # Flag for categorical (or non-categorical) inputs)
+#data = parser.get_vehicles_dataset(parser.vehicles_path)
+#attributes = parser.vehicles_attributes
+dtreeclasses.set_categ_flag(True)  # Flag for categorical (or non-categorical) inputs)
 
 partition_percentage = 0.66  # Partition percentage for bootstrap replicas (1/3 left out)
 Number_replicas = 100
@@ -39,7 +39,7 @@ def main():
     OOBIndividualSingle = 0  # Accumulator for Out-of-bag indiv. tree error (single input splitting: F=1 )
     OOBIndividualMultiple = 0  # Accumulator for Out-of-bag indiv. tree error (multiple input splitting: F=log(M)+1 )
 
-    F = math.floor(dtreeclasses.log2(M)+1)  # F: Size of group (number of attributes we are using in each node)
+    F = int(math.floor(dtreeclasses.log2(M)+1))  # F: Size of group (number of attributes we are using in each node)
 
     for iteration in range(N_times):  # Loop for averaging errors
         print("Iteration", iteration)
@@ -121,8 +121,8 @@ def split_data(dataset):
     dataset = tuple(dataset)
 
     N_data = len(dataset)
-    training_set = tuple(dataset[:math.floor(N_data*0.9)])  # Returned as tuple for proper running
-    test_set = tuple(dataset[math.floor(N_data*0.9):])      # Returned as tuple for proper running
+    training_set = tuple(dataset[:int(math.floor(N_data*0.9))])  # Returned as tuple for proper running
+    test_set = tuple(dataset[int(math.floor(N_data*0.9)):])      # Returned as tuple for proper running
     return training_set, test_set
 
 
@@ -134,7 +134,8 @@ def outOfBagError(training_set, data_trees, indeces_points):
         # votes is a list with the number of votes per class
         for i, tree in enumerate(data_trees):
             if indeces_points[i][position] == False:  # point does not belongs to replica[i]
-                votes[int(dtreeclasses.classify(tree, sample))] += 1  # returns classification of sample using tree
+                votes[int(dtreeclasses.classify(tree, sample))] += 1 # returns classification of sample using tree
+        print 'votes= '+str(votes)
         if votes.index(max(votes)) == int(sample.positive): # Majority vote =? class
             accum += 1
     return 1 - (accum / len(training_set))
