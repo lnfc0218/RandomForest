@@ -152,6 +152,7 @@ line_correlation=plt.plot(F,avg_correlation, color='green',marker='o' , linestyl
 plt.xlim([0,50])
 plt.ylim([0,.6])
 plt.xlabel('$F$')
-plt.legend()
+plt.ylabel('Y Variables')
+plt.legend(loc=5)
 plt.title('Strength and Correlation')
 plt.show()
