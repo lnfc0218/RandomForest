@@ -14,6 +14,7 @@ import monkdata as m
 import projmain as parser
 import itertools
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 # Reading data
@@ -139,3 +140,18 @@ for F in range(50):
     whole_strength.append(row_strength)
     whole_correlation.append(row_correlation)
     
+
+avg_strength=np.mean(whole_strength,axis=1)
+avg_correlation=np.mean(whole_correlation,axis=1)
+
+F=np.arange(1,51)
+
+plt.figure()
+line_strength=plt.plot(F,avg_strength, color='blue',marker='o' , linestyle='--',label='strength')
+line_correlation=plt.plot(F,avg_correlation, color='green',marker='o' , linestyle='--',label='correlation')
+plt.xlim([0,50])
+plt.ylim([0,.6])
+plt.xlabel('$F$')
+plt.legend()
+plt.title('Strength and Correlation')
+plt.show()
