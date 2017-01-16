@@ -1,3 +1,7 @@
+"""
+@author: Diego Yus
+"""
+
 import pandas as p
 import numpy
 

@@ -1,3 +1,7 @@
+"""
+@modified by: Diego Yus
+"""
+
 import math
 import random
 import itertools

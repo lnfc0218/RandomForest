@@ -1,3 +1,7 @@
+"""
+@author: Diego Yus
+"""
+
 from scipy.stats import bernoulli
 import dtreeclasses
 import math
